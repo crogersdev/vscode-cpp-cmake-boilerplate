@@ -1,14 +1,14 @@
 gotta have:
 
-cmake\n
-g++\n
-vscode\n
+cmake<br>
+g++<br>
+vscode<br>
 
-put your code in src\n
+put your code in src<br>
 put your resources in res
 
-mkdir _bld\n
-cd _bld\n
-cmake ..\n
-make\n
+mkdir _bld<br>
+cd _bld<br>
+cmake ..<br>
+make<br>
 ./app
