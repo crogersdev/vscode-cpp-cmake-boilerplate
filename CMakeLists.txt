@@ -1,44 +1,35 @@
-cmake_minimum_required(VERSION 3.21)
-project(pacman LANGUAGES CXX)
+cmake_minimum_required(VERSION 3.24...3.30)
+project(raylib-fun)
 
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_EXTENSIONS OFF)
+
+# Generate compile_commands.json
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
-if(NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
-  message(STATUS "Setting build type to 'Debug' as none was specified...")
-  set(CMAKE_BUILD_TYPE Debug CACHE STRING "Choose the type of build." FORCE)
-  set_property(CACHE CMAKE_BUILD_TYPE PROPERTY STRINGS "Debug" "Release" "MinSizeRel" "RelWithDebInfo")
-endif()
+# Dependencies
+set(RAYLIB_VERSION 5.5)
+set(RAYLIB_VERBOSE 1)
 
-if(CMAKE_BUILD_TYPE STREQUAL "Debug")
-  message(STATUS "Setting CXX Flags for Debug build...")
-  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g")
-elseif(CMAKE_BUILD_TYPE STREQUAL "Release")
-  message(STATUS "Setting the CXX Flags for Release build...")
-  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O3 -DNDEBUG")
-endif()
+add_executable(${PROJECT_NAME})
+add_subdirectory(src)
 
-file(GLOB_RECURSE SUBDIRECTORIES LIST_DIRECTORIES true "${CMAKE_SOURCE_DIR}/src/*")
-
-# uncomment this guy if you've got resources you need to add -- like game sprites or something
-# file(COPY res DESTINATION ${CMAKE_BINARY_DIR})
-
-message(STATUS "Subdirectories found:")
-foreach(SUBDIR ${SUBDIRECTORIES})
-    if(IS_DIRECTORY ${SUBDIR})
-        message(STATUS "  Adding: ${SUBDIR}")
-        add_subdirectory(${SUBDIR})
-    endif()
-endforeach()
-
-add_executable(app src/main.cpp ${SOURCE_FILES})
-
-# having linker errors?  undefined references to things?  make sure
-# the appropriate folder's named library from its CMakeLists.txt file
-# is appended here
-# TODO: can we auto-detect these...?
-target_link_libraries(
-    app
-    # extra things like sfml go here if you were going to use them
+set_target_properties(
+    ${PROJECT_NAME} PROPERTIES 
+        RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/${PROJECT_NAME}
 )
 
-install(TARGETS app)
+set_property(
+    TARGET ${PROJECT_NAME} PROPERTY
+        VS_DEBUGGER_WORKING_DIRECTORY $<TARGET_FILE_DIR:${PROJECT_NAME}>
+)
+
+target_link_libraries(${PROJECT_NAME} raylib)
+
+# Checks if OSX and links appropriate frameworks (Only required on MacOS)
+if (APPLE)
+    target_link_libraries(${PROJECT_NAME} "-framework IOKit")
+    target_link_libraries(${PROJECT_NAME} "-framework Cocoa")
+    target_link_libraries(${PROJECT_NAME} "-framework OpenGL")
+endif()
