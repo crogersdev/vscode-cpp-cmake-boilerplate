@@ -9,6 +9,8 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 # Dependencies
+# consider using FetchContent or other mechanisms
+# to go and get and then install raylib.
 set(RAYLIB_VERSION 5.5)
 set(RAYLIB_VERBOSE 1)
 
